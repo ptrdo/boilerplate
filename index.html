@@ -8,14 +8,13 @@
   <meta name="copyright" content="2017">
   <meta name="language" content="English">
   <meta name="description" content="">
-  <meta name="revised" content="2017/05/31">
+  <meta name="revised" content="2017/10/24">
   <meta name="viewport" content="width=device-width,user-scalable=yes">
   <link rel="stylesheet" href="./css/normalize.css?v=7.0.0">
-  <link rel="stylesheet" href="./css/idm-font.css">
-  <link rel="stylesheet" href="./css/idm-global.css">
-  <link rel="stylesheet" href="./css/idm-core.css">
-  <script src="./js/navigation.js"></script>
-  <script src="./js/menu.js"></script>
+  <link rel="stylesheet" href="./css/idmorg-font.css">
+  <link rel="stylesheet" href="./css/idmorg-global.css">
+  <link rel="stylesheet" href="./css/idmorg-core.css">
+  <script src="./js/idmorg-menu.js"></script>
 </head>
 <body>
 <main id="main">
@@ -34,6 +33,7 @@
       <div id="content">
 
        <!-- PAGE CONTENT HERE -->
+        <p id="regular" style="margin:7rem;display:inline-block;cursor:pointer;">A Regular Menu</p>
 
       </div>
     </div>
@@ -51,18 +51,98 @@
 </main>
 <script>
 
-  var menu = new IDM_Menu();
-  var ele = document.getElementById("tribar");
-  // var navigation // loaded above as script
+  /* EXAMPLE IMPLEMENTATION */
 
-  ele.addEventListener("click", function(event) {
-    event.stopPropagation();
-    ele.classList.toggle("active");
-  });
+  var sample = {
+    "parentNode": null,
+    "element": "menu",
+    "attributes": {
+      "class": "dropdown"
+    },
+    "childNodes": [{
+      "element": "a",
+      "content": "Google",
+      "attributes": {
+        "href": "http://google.com",
+        "title": "search for something..."
+      }
+    }, {
+      "element": "a",
+      "content": "Amazon",
+      "attributes": {
+        "href": "http://relentless.com",
+        "title": "buy something..."
+      }
+    }, {
+      "attributes": {
+        "class": "spacer"
+      }
+    }, {
+      "element": "a",
+      "content": "Go to Here",
+      "attributes": {
+        "href": "#here",
+        "title": "this link will go to the #here hash"
+      }
+    }, {
+      "element": "a",
+      "content": "Go to There",
+      "attributes": {
+        "href": "#null",
+        "onclick": "return false;",
+        "title": "this link will do nothing!"
+      },
+      "childNodes": [
+        {
+          "element": "a",
+          "content": "Or this place",
+          "attributes": {
+            "href": "#thisplace",
+            "title": "This is one option"
+          }
+        },
+        {
+          "element": "a",
+          "content": "Or another place",
+          "attributes": {
+            "href": "#anotherplace",
+            "title": "This is another option"
+          }
+        }
+      ]
+    }]
+  };
 
-  setTimeout(function() {
-    menu.create(ele, navigation);
-  }, 1000);
+
+  // this is a standard default implementation...
+  var tribarElement = document.getElementById("tribar");
+  var tribarMenu = new IDM_Menu();
+  tribarMenu.create(tribarElement, sample);
+
+  // this is a custom menu click handler..
+  var onMenuItemClick = function(event) {
+     event.preventDefault();
+     // allow the menu to close...
+     setTimeout(function() {
+       // show which item was clicked...
+       alert("A custom click handler has intervened!\n" + event.target.innerText);
+     }, 0);
+  };
+
+  // this example instantiates with the custom menu click handler...
+  var regularElement = document.getElementById("regular");
+  var regularMenu = new IDM_Menu({ menuItemHandler: onMenuItemClick });
+  regularMenu.create(regularElement, sample);
+
+
+  /**
+   * customizable options (passed during the instantiation, as above)
+   * @property {Boolean} config.handleToggling when true, open/close of menu is provided.
+   * @property {Boolean} config.maskElsewhere when true, entire viewport is cloaked to dismiss menu with click-away.
+   * @property {Function} config.menuHandler is attached/removed as handler for open/close of menu.
+   * @property {Function} config.menuItemHandler is attached/removed as "click" handler of the appended menu.
+   */
+
 
 </script>
 </body>

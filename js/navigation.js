@@ -1,12 +1,13 @@
 ﻿"use strict";
 
-/** NAVIGATION
- *  Data for populating primary menu navigation.
+/**
+ * NAVIGATION
+ * Example data for populating primary menu navigation.
  *
- *  NOTE: Modules are variably navigatable --
- *  sometimes in several ways and sometimes not at all.
- *  Dynamically prescribing a navigation menu is challenging,
- *  at least until user needs are better understood.
+ * To test:
+ * <script src="./js/navigation.js"></script>
+ * var myMenu = new IDM_Menu();
+ * myMenu.create(someElement, navigation);
  */
 var navigation = {
   "parentNode": null,

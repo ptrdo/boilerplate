@@ -1,7 +1,7 @@
 ﻿@charset "UTF-8";
 
 /**
- * idm-core
+ * idmorg-core
  * IDM Core (Themeable) Styles
  *
  * @author psylwester(at)idm(dot)org
@@ -354,6 +354,7 @@ menu.dropdown
 
 div.menuMask
 {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -363,7 +364,8 @@ div.menuMask
   background-color: rgba(0, 0, 0, 0);
 }
 
-.active > menu.dropdown
+.active > menu.dropdown,
+.active > div.menuMask
 {
   display: block;
 }
@@ -535,7 +537,7 @@ menu.dropdown li.more > menu
 {
   display: none;
   left: 100%;
-  margin-top: 0;
+  margin-top: -3px;
   margin-left: -3em;
   z-index: 2;
 }
@@ -544,6 +546,7 @@ menu.dropdown li.more:hover > menu,
 menu.dropdown li.more.open > menu
 {
   display: block;
+  position: absolute;
 }
 
 
@@ -777,6 +780,11 @@ body.auth #header nav.primary > menu:first-of-type
 #tribar menu.dropdown li.more:before
 {
   color: whitesmoke;
+}
+
+#tribar menu.dropdown li.more menu
+{
+  margin-top: 0;
 }
 
 #tribar menu.dropdown li.more menu ul li:first-of-type
