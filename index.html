@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="./css/idm-font.css">
   <link rel="stylesheet" href="./css/idm-global.css">
   <link rel="stylesheet" href="./css/idm-core.css">
+  <script src="./js/navigation.js"></script>
   <script src="./js/menu.js"></script>
 </head>
 <body>
@@ -48,5 +49,21 @@
     </nav>
   </footer>
 </main>
+<script>
+
+  var menu = new IDM_Menu();
+  var ele = document.getElementById("tribar");
+  // var navigation // loaded above as script
+
+  ele.addEventListener("click", function(event) {
+    event.stopPropagation();
+    ele.classList.toggle("active");
+  });
+
+  setTimeout(function() {
+    menu.create(ele, navigation);
+  }, 1000);
+
+</script>
 </body>
 </html>

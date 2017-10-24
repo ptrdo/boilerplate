@@ -2,8 +2,6 @@
 
 /** NAVIGATION
  *  Data for populating primary menu navigation.
- *  Consumed by "/app/components/menu/menu"
- *  Executed by "/app/shell/js/index"
  *
  *  NOTE: Modules are variably navigatable --
  *  sometimes in several ways and sometimes not at all.
@@ -201,5 +199,3 @@ var navigation = {
     }
   }]
 };
-
-export default navigation;
