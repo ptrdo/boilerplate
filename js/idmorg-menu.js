@@ -1,4 +1,4 @@
-﻿(function (exports) {
+﻿﻿(function (exports) {
   /**
    * IDM_Menu is a dropdown menu constructor as prescribed by JSON-formatted HTML syntax.
    *
@@ -6,7 +6,7 @@
    * @license MIT
    * @version 1.00, 2017/10/24
    * @requires "HTML5", "ECMA-262 Edition 5.1"
-   * @requires IE 10+, Edge 14+, FF 52+, Chrome 49+, Safari 10+
+   * @requires Explorer 10+, Edge 14+, FF 52+, Chrome 49+, Safari 10+
    * @requires idmorg-core.css (-font.css, -global.css recommended)
    *
    * AMD (RequireJS) IMPLEMENTATION:
@@ -26,7 +26,7 @@
    *
    * CommonJS (NodeJS) IMPLEMENTATION:
    *
-   *   import IDM_Menu from "path/to/idmorg-menu.js";
+   *   import { IDM_Menu } from "path/to/idmorg-menu.js";
    *
    *   $(function() {
    *
@@ -112,10 +112,13 @@
   var erase = function (targetNode) {
     var parent = targetNode.parentNode;
     if (parent.firstChild != targetNode) {
-      // removing the menuMask...
+      // remove menuMask if it exists...
       parent.removeChild(parent.firstChild);
     }
-    parent.removeChild(parent.firstChild);
+    if (parent.firstChild == targetNode) {
+      // remove the menu itself...
+      parent.removeChild(parent.firstChild);
+    }
     return null;
   };
 
@@ -135,20 +138,23 @@
      * @public overridden via options passed at instantiation
      * @property {Boolean} config.handleToggling when true, open/close of menu is provided.
      * @property {Boolean} config.maskElsewhere when true, entire viewport is cloaked to dismiss menu with click-away.
-     * @property {Function} config.menuHandler is attached/removed as handler for open/close of menu.
-     * @property {Function} config.menuItemHandler is attached/removed as "click" handler of the appended menu.
+     * @property {Function} config.onMenuToggle fires when menu is opened or closed, invoked with one argument: true if open, false if closed.
+     * @property {Function} config.onMenuItemClick fires when menu item is clicked, invoked with one argument: the event.
      */
     var config = {
       handleToggling: true,
       maskElsewhere: true,
-      menuHandler: function(event) {
-        event.stopPropagation();
-        element.classList.toggle("active");
+      onMenuToggle: function(isOpen) {
+        // console.log("menu.isOpen:", isOpen);
       },
-      menuItemHandler: function(event) {}
+      onMenuItemClick: function(event) {
+        // console.log("clicked!", event.target);
+        // when usurping an href, add this here:
+        // event.preventDefault();
+      }
     };
 
-    /* override defaults */
+    /* override defaults with any passed options */
     if (!!options && options instanceof Object) {
       if ("handleToggling" in options) {
         config.handleToggling = !!options.handleToggling;
@@ -156,17 +162,37 @@
       if ("maskElsewhere" in options) {
         config.maskElsewhere = !!options.maskElsewhere;
       }
-      if ("menuHandler" in options) {
-        if (options.menuHandler instanceof Function) {
-          config.menuHandler = options.menuHandler;
+      if ("onMenuToggle" in options) {
+        if (options.onMenuToggle instanceof Function) {
+          config.onMenuToggle = options.onMenuToggle;
         }
       }
-      if ("menuItemHandler" in options) {
-        if (options.menuItemHandler instanceof Function) {
-          config.menuItemHandler = options.menuItemHandler;
+      if ("onMenuItemClick" in options) {
+        if (options.onMenuItemClick instanceof Function) {
+          config.onMenuItemClick = options.onMenuItemClick;
         }
       }
     }
+
+    /**
+     * @private listeners
+     * @event {Function} onMenuToggleHandler is a listener for the "click" which opens/closes a menu.
+     * @event {Function} onMenuItemClickHandler is a listener for the "click" of a menu item.
+     */
+    var onMenuToggleHandler = function (event) {
+      event.stopPropagation();
+      element.classList.toggle("active");
+
+      if ("onMenuToggle" in config && config.onMenuToggle instanceof Function) {
+        config.onMenuToggle(element.classList.contains("active"));
+      }
+    };
+    var onMenuItemClickHandler = function (event) {
+      // event.stopPropagation(); // ...would end bubble and keep menu open
+      if ("onMenuItemClick" in config && config.onMenuItemClick instanceof Function) {
+        config.onMenuItemClick(event);
+      }
+    };
 
     /**
      * @public methods
@@ -186,16 +212,16 @@
         if (targetNode instanceof Element) {
           if (dataCollection instanceof Object && /\{.*\:\{.*\:.*\}\}/g.test(JSON.stringify(dataCollection))) {
             if (!!instance && !!element) {
-              element.removeEventListener("click", config.menuHandler);
-              instance.removeEventListener("click", config.menuItemHandler);
+              element.removeEventListener("click", onMenuToggleHandler);
+              instance.removeEventListener("click", onMenuItemClickHandler);
               instance = erase(element);
             }
             element = targetNode;
             source = dataCollection;
             instance = draw(element, source, config.maskElsewhere);
-            instance.addEventListener("click", config.menuItemHandler, false);
+            instance.addEventListener("click", onMenuItemClickHandler, false);
             if (config.handleToggling) {
-              element.addEventListener("click", config.menuHandler, false);
+              element.addEventListener("click", onMenuToggleHandler, false);
             }
             return instance;
           }
@@ -213,12 +239,20 @@
     };
 
     /**
+     * isOpen
+     * @returns {Boolean} true when a menu is rendered and visible.
+     */
+    api.isOpen = function () {
+      return !!element && element.classList.contains("active");
+    };
+
+    /**
      * remove element, data, and handlers.
      */
     api.remove = function () {
       if (!!element) {
-        element.removeEventListener("click", config.menuHandler);
-        instance.removeEventListener("click", config.menuItemHandler);
+        element.removeEventListener("click", onMenuToggleHandler);
+        instance.removeEventListener("click", onMenuItemClickHandler);
         instance = erase(element);
         element = null;
       }
@@ -227,6 +261,10 @@
 
     api.getElement = function () {
       return element;
+    };
+
+    api.getMenu = function () {
+      return instance;
     };
 
     api.getData = function () {

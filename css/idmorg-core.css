@@ -700,7 +700,16 @@ body.auth #header nav.primary > menu:first-of-type
   box-sizing: border-box;
 }
 
-#tribar.active i.material-icons {
+#tribar i.material-icons:hover
+{
+  background: #00b3ff;
+  color: #004766;
+}
+
+#tribar.active i.material-icons:active,
+#tribar:active i.material-icons:hover
+{
+  background: transparent;
   color: #00b3ff;
 }
 

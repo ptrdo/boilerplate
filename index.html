@@ -131,16 +131,16 @@
 
   // this example instantiates with the custom menu click handler...
   var regularElement = document.getElementById("regular");
-  var regularMenu = new IDM_Menu({ menuItemHandler: onMenuItemClick });
+  var regularMenu = new IDM_Menu({ onMenuItemClick: onMenuItemClick });
   regularMenu.create(regularElement, sample);
 
 
   /**
-   * customizable options (passed during the instantiation, as above)
+   * @public overridden via options passed at instantiation
    * @property {Boolean} config.handleToggling when true, open/close of menu is provided.
    * @property {Boolean} config.maskElsewhere when true, entire viewport is cloaked to dismiss menu with click-away.
-   * @property {Function} config.menuHandler is attached/removed as handler for open/close of menu.
-   * @property {Function} config.menuItemHandler is attached/removed as "click" handler of the appended menu.
+   * @property {Function} config.onMenuToggle fires when menu is opened or closed, invoked with one argument: true if open, false if closed.
+   * @property {Function} config.onMenuItemClick fires when menu item is clicked, invoked with one argument: the event.
    */
 
 
