@@ -352,7 +352,7 @@ menu.dropdown
   overflow: visible;
 }
 
-div.menuMask
+div.idmorg-menu-mask
 {
   display: none;
   position: fixed;
@@ -365,7 +365,7 @@ div.menuMask
 }
 
 .active > menu.dropdown,
-.active > div.menuMask
+.active > div.idmorg-menu-mask
 {
   display: block;
 }

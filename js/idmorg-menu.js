@@ -1,4 +1,4 @@
-﻿﻿(function (exports) {
+﻿(function (exports) {
   /**
    * IDM_Menu is a dropdown menu constructor as prescribed by JSON-formatted HTML syntax.
    *
@@ -88,7 +88,7 @@
         cell.classList.add("expander");
         item.appendChild(cell);
         item.classList.add("more");
-        item.appendChild(factory({"childNodes": child.childNodes}));
+        item.appendChild(factory({ "childNodes": child.childNodes }));
       }
 
       list.appendChild(item);
@@ -103,21 +103,21 @@
     var menu = targetNode.insertBefore(factory(dataCollection), targetNode.firstChild);
     var mask = document.createElement("div");
     if (!!addMask) {
-      mask.classList.add("menuMask");
+      mask.classList.add("idmorg-menu-mask");
       targetNode.insertBefore(mask, targetNode.firstChild);
     }
+    menu.classList.add("idmorg-menu");
     return menu;
   };
 
   var erase = function (targetNode) {
-    var parent = targetNode.parentNode;
-    if (parent.firstChild != targetNode) {
-      // remove menuMask if it exists...
-      parent.removeChild(parent.firstChild);
+    var menu = targetNode.getElementsByClassName("idmorg-menu")[0];
+    var mask = targetNode.getElementsByClassName("idmorg-menu-mask")[0];
+    if (!!menu) {
+      targetNode.removeChild(menu);
     }
-    if (parent.firstChild == targetNode) {
-      // remove the menu itself...
-      parent.removeChild(parent.firstChild);
+    if (!!mask) {
+      targetNode.removeChild(mask);
     }
     return null;
   };
@@ -127,15 +127,15 @@
     "use strict";
 
     /**
-     * @private
-     * @property {HTMLElement} instance is the appended menu.
-     * @property {HTMLElement} element is the parent of the appended menu.
+     * @private but set during instantiation and accessible via public getters.
      * @property {JSON} source is the data which prescribes the menu.
+     * @property {HTMLElement} element is the parent (target) of the appended menu.
+     * @property {HTMLElement} instance is the appended menu.
      */
-    var element, source, instance;
+    var source, element, instance;
 
     /**
-     * @public overridden via options passed at instantiation
+     * @private but can be overridden via options passed during instantiation.
      * @property {Boolean} config.handleToggling when true, open/close of menu is provided.
      * @property {Boolean} config.maskElsewhere when true, entire viewport is cloaked to dismiss menu with click-away.
      * @property {Function} config.onMenuToggle fires when menu is opened or closed, invoked with one argument: true if open, false if closed.
@@ -144,10 +144,10 @@
     var config = {
       handleToggling: true,
       maskElsewhere: true,
-      onMenuToggle: function(isOpen) {
+      onMenuToggle: function (isOpen) {
         // console.log("menu.isOpen:", isOpen);
       },
-      onMenuItemClick: function(event) {
+      onMenuItemClick: function (event) {
         // console.log("clicked!", event.target);
         // when usurping an href, add this here:
         // event.preventDefault();
@@ -182,7 +182,6 @@
     var onMenuToggleHandler = function (event) {
       event.stopPropagation();
       element.classList.toggle("active");
-
       if ("onMenuToggle" in config && config.onMenuToggle instanceof Function) {
         config.onMenuToggle(element.classList.contains("active"));
       }
@@ -247,9 +246,9 @@
     };
 
     /**
-     * remove element, data, and handlers.
+     * destroy element, data, and handlers.
      */
-    api.remove = function () {
+    api.destroy = function () {
       if (!!element) {
         element.removeEventListener("click", onMenuToggleHandler);
         instance.removeEventListener("click", onMenuItemClickHandler);
