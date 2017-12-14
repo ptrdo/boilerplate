@@ -81,12 +81,14 @@ pre, code, kbd, pre, samp, .mono
   font-size: 16px;
 }
 
-:-moz-placeholder
+:-moz-placeholder,
+::-moz-placeholder
 {
   color: #4d8bb8;
   font-family: "Calibri", "Helvetica Neue", Arial, sans-serif;
   font-style: italic;
   font-size: 16px;
+  opacity: 1;
 }
 
 :-ms-input-placeholder

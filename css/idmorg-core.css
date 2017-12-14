@@ -87,7 +87,7 @@ body #main > article
   flex: 1;
 }
 
-#wrap
+html[data-useragent*="Trident"] #wrap
 {
 /* IE lax support of flexbox */
   min-height: 100%;
